@@ -64,17 +64,6 @@ class LList {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 struct Pose {
   Eigen::Vector2d pos;
   double hdg;
@@ -381,10 +370,6 @@ static double square_even(double period, double t) {
   double phase = fmod(t, period);
   return (phase < (period / 4.0) || phase >= period - (period / 4.0)) ? 1.0 : -1.0;
 }
-
-
-
-
 static void AddCurve(Track& track) {
   Eigen::Vector2d pos(0.0, 0.0);
   double hdg = 0.0;
@@ -400,8 +385,6 @@ static void AddCurve(Track& track) {
     track.AddPoint(pos);
   }
 }
-
-
 static void AddPath(Track& track) {
   Eigen::Vector2d pos(0.0, 0.0);
   double hdg = 0.0;
@@ -458,10 +441,6 @@ static void LoadFile(Track& track, const std::string& csvfile) {
 
 
 
-
-
-
-
 int main(int argc, char** argv) {
   ros::init(argc, argv, "track_example");
 
@@ -469,12 +448,14 @@ int main(int argc, char** argv) {
   ros::Publisher pub_track_center = nh.advertise<nav_msgs::Path>("track_center", 1000);
   ros::Publisher pub_track_inside = nh.advertise<nav_msgs::Path>("track_inside", 1000);
   ros::Publisher pub_track_outside = nh.advertise<nav_msgs::Path>("track_outside", 1000);
-  ros::Publisher track_poses_pub = nh.advertise<geometry_msgs::PoseArray>("track_poses", 1000);
+  ros::Publisher pub_track_poses = nh.advertise<geometry_msgs::PoseArray>("track_poses", 1000);
   ros::Publisher pub_curvs = nh.advertise<visualization_msgs::MarkerArray>("track_curvs", 1000);
+
+
 
   Track track;
   //AddCurve(track);
-  LoadFile(track, "track.csv");
+  LoadFile(track, "src/robocar-ros/map_example/test/track.csv");
   track.Compute();
   //track.Print();
   //track.Center(Eigen::Vector2d(0.0, -2.0));
@@ -491,9 +472,9 @@ int main(int argc, char** argv) {
 
   ros::Rate loop_rate(10);
   while (ros::ok()) {
-    nav_msgs::Path path;
-    track.GetPath(path);
-    pub_track_center.publish(path);
+    nav_msgs::Path path_center;
+    track.GetPath(path_center);
+    pub_track_center.publish(path_center);
     nav_msgs::Path path_inside;
     track.GetPathWithOffset(path_inside, 0.5);
     pub_track_inside.publish(path_inside);
@@ -503,7 +484,7 @@ int main(int argc, char** argv) {
 
     geometry_msgs::PoseArray poses;
     track.GetPoseArray(poses);
-    track_poses_pub.publish(poses);
+    pub_track_poses.publish(poses);
 
     visualization_msgs::MarkerArray markers;
     track.GetCurvs(markers);
