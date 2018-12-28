@@ -474,12 +474,12 @@ int main(int argc, char** argv) {
 
   Track track;
   //AddCurve(track);
-  LoadFile(track, "/home/themole/TheMole/diyrobocar/map/track_scaled.csv");
+  LoadFile(track, "track.csv");
   track.Compute();
   //track.Print();
   //track.Center(Eigen::Vector2d(0.0, -2.0));
   //track.Scale(Eigen::Vector2d(0.5, 0.5));
-  //track.SaveToFile("/home/themole/TheMole/diyrobocar/map/track_output.csv");
+  //track.SaveToFile("track_output.csv");
 
 
   //for (double s = 0.0; s < 40.0; s += 0.1) {
@@ -488,9 +488,6 @@ int main(int argc, char** argv) {
   //            << ", hdg=" << pt.hdg << ", curv=" << pt.curv << ", curvdot=" << pt.curvdot
   //            << std::endl;
   //}
-
-
-
 
   ros::Rate loop_rate(10);
   while (ros::ok()) {
